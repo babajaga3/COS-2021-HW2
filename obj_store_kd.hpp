@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 
 #include "node.hpp"
 #include "object.hpp"
@@ -12,6 +11,6 @@ public:
     ObjStoreKD();
     ObjStoreKD(Node<Object> *new_root);
 
-    bool insert(Object obj);
-    void find_all_within_radius(Point2D point_2d, float radius, std::vector<Object*> &objs) const;
+    void insert(Node<Object> *new_node, int dim, Node<Object> *start);
+    static float at(const Node<Object> *node, const int &index);
 };
