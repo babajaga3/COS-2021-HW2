@@ -1,25 +1,23 @@
 #pragma once
 
-#include "point.hpp"
-
+template<typename T>
 class Node {
 private:
-    Point2D *point_2d;
+    T *data;
     Node *left;
     Node *right;
 
 public:
     // Constructors
-    Node();
-    Node(Point2D point_2d);
+    Node(T data);
 
     // Getters
-    Point2D* get_point_2d() const;
+    T* get_data() const;
     Node* get_left() const;
     Node* get_right() const;
 
     // Setters
-    void set_point_2d(Point2D &new_point_2d);
+    void set_data(T &new_data);
     void set_left(Node *left);
     void set_right(Node *right);
 };

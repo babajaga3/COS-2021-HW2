@@ -1,33 +1,36 @@
 #include "node.hpp"
-#include "point.hpp"
 
-// Initializers
-Node::Node() : left(nullptr), right(nullptr) {
-    this->point_2d = new Point2D();
-}
-Node::Node(const Point2D point_2d) : left(nullptr), right(nullptr) {
-    this->point_2d = new Point2D(point_2d.x, point_2d.y);
-}
+template<typename T>
+Node<T>::Node(T data) : data(data), left(nullptr), right(nullptr) {}
 
 // Getters
-Point2D* Node::get_point_2d() const {
-    return point_2d;
-}
-Node* Node::get_left() const {
+template<typename T>
+Node<T> *Node<T>::get_left() const {
     return left;
 }
-Node* Node::get_right() const {
+
+template<typename T>
+Node<T> *Node<T>::get_right() const {
     return right;
 }
 
-// Setters
-void Node::set_point_2d(Point2D &new_point_2d) {
-    this->point_2d = &new_point_2d;
+template<typename T>
+T *Node<T>::get_data() const {
+    return data;
 }
-void Node::set_left(Node *left) {
+
+// Setters
+template<typename T>
+void Node<T>::set_left(Node *left) {
     this->left = left;
 }
-void Node::set_right(Node *right) {
+
+template<typename T>
+void Node<T>::set_right(Node *right) {
     this->right = right;
 }
 
+template<typename T>
+void Node<T>::set_data(T &new_data) {
+    this->data = new_data;
+}
