@@ -5,9 +5,13 @@
 
 class ObjStoreV {
 private:
-    std::vector<Object> objs;
+    std::vector<Object*> objs;
+
 public:
     ObjStoreV();
-    ObjStoreV(std::vector<Object> objs);
-    bool Insert(Object o);
+    ObjStoreV(std::vector<Object*> & objs);
+
+    bool Insert(Object* o);
+    void FindAllWithinRadius(Point2D center, float radius, std::vector<Object*> & objs);
+
 };
