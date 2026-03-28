@@ -63,13 +63,7 @@ void ObjStoreKD::kd_insert(Node<Object> *new_node, const int dim, Node<Object> *
 
 bool ObjStoreKD::insert(const Object &obj) {
 
-    // verify that the id doesn't already exist
-    if (existing_keys->contains(obj.GetID())) {
-        return false;
-    }
-
-    // add id to set
-    existing_keys->insert(obj.GetID());
+    // somehow check if it's duplicating.
 
     Node<Object> *new_node = new Node<Object>(obj);
 
@@ -118,10 +112,12 @@ void ObjStoreKD::kd_find_all(Point2D center, float radius, std::vector<Object *>
 
     if (current->IsWithinCircle(center, radius)) {
         objs.push_back(current);
-    }
 
-    kd_find_all(center, radius, objs, node->get_left());
-    kd_find_all(center, radius, objs, node->get_right());
+        kd_find_all(center, radius, objs, node->get_left());
+        kd_find_all(center, radius, objs, node->get_right());
+    } else {
+        kd_find_all(center, radius, objs, node->get_left());
+    }
 }
 
 void ObjStoreKD::find_all_within_radius(Point2D center, float radius, std::vector<Object *> &objs) const {
