@@ -3,11 +3,11 @@
 #include <iostream>
 
 ObjStoreKD::ObjStoreKD() : root(nullptr) {
-    this->existing_ids = new std::unordered_set<int>();
+    this->existing_keys = new std::unordered_set<int>();
 }
 
 ObjStoreKD::ObjStoreKD(Node<Object> *new_root) : root(new_root) {
-    this->existing_ids = new std::unordered_set<int>();
+    this->existing_keys = new std::unordered_set<int>();
 }
 
 ObjStoreKD::~ObjStoreKD() {
@@ -64,12 +64,12 @@ void ObjStoreKD::kd_insert(Node<Object> *new_node, const int dim, Node<Object> *
 bool ObjStoreKD::insert(const Object &obj) {
 
     // verify that the id doesn't already exist
-    if (existing_ids->contains(obj.GetID())) {
+    if (existing_keys->contains(obj.GetID())) {
         return false;
     }
 
     // add id to set
-    existing_ids->insert(obj.GetID());
+    existing_keys->insert(obj.GetID());
 
     Node<Object> *new_node = new Node<Object>(obj);
 
@@ -78,19 +78,19 @@ bool ObjStoreKD::insert(const Object &obj) {
     return true;
 }
 
-void ObjStoreKD::print() const {
-    kd_print(root, 0);
-}
-
-void ObjStoreKD::find_all_within_radius(Point2D center, float radius, std::vector<Object *> &objs) {
-    //
-}
-
-void ObjStoreKD::kd_print(Node<Object>* node, int dim) {
+void ObjStoreKD::kd_print(Node<Object>* node, int dim, bool left) const {
     if (node == nullptr) return;
 
     for (int i = 0; i < dim; i++) std::cout << "  ";
-    std::cout << "(";
+
+    if (node == root) {
+        std::printf("%s (", "[ROOT]");
+    } else if (left) {
+        std::printf("%s (", "[L]");
+    } else {
+        std::printf("%s (", "[R]");
+    }
+
     for (int i = 0; i < 2; i++) {
         if (dim % 2 == 0) {
             std::printf("\x1B[32m%f\033[0m", at(node, i));
@@ -103,8 +103,30 @@ void ObjStoreKD::kd_print(Node<Object>* node, int dim) {
     }
     std::printf(") %s\n", dim % 2 == 0 ? "[x]" : "[y]");
 
-    kd_print(node->get_left(), dim + 1);
-    kd_print(node->get_right(), dim + 1);
+    kd_print(node->get_left(), dim + 1, true);
+    kd_print(node->get_right(), dim + 1, false);
+}
+
+void ObjStoreKD::print() const {
+    kd_print(root, 0, false);
+}
+
+void ObjStoreKD::kd_find_all(Point2D center, float radius, std::vector<Object *> &objs, Node<Object> *node) {
+    if (node == nullptr) return;
+
+    Object *current = &node->get_data();
+
+    if (current->IsWithinCircle(center, radius)) {
+        objs.push_back(current);
+
+    }
+
+    kd_find_all(center, radius, objs, node->get_left());
+    kd_find_all(center, radius, objs, node->get_right());
+}
+
+void ObjStoreKD::find_all_within_radius(Point2D center, float radius, std::vector<Object *> &objs) const {
+    kd_find_all(center, radius, objs, this->root);
 }
 
 float ObjStoreKD::at(Node<Object> *node, const int &index) {
