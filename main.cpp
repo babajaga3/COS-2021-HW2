@@ -1,78 +1,139 @@
 #include <iostream>
-#include <random>
+#include <vector>
 
-#include "object.hpp"
-#include "obj_store_kd.hpp"
-#include "obj_store_v.hpp"
+#include "benchmark.hpp"
 #include "timer.hpp"
 
-float random_float(float range_to = 1000.f) {
-    const float range_from = 0.0f;
-
-    std::random_device                  rand_dev;
-    std::mt19937                        generator(rand_dev());
-    std::uniform_real_distribution      distribution(range_from, range_to);
-    return distribution(generator);
-}
-
-Point2D random_point() {
-    return { random_float(), random_float() };
-}
 
 /*
  * MADE BY:
  * TOMA BOUROV 200274715
  * HAYK MATEVOSYAN
  */
+
+/*
+ * TEST RESULTS:
+
+|KD_TREE              |
+=======================
+|NUM TESTS |NUM ENEMY |
+=======================
+|3         |100000    |
+=======================
+0.013775s
+0.004625s
+0.006816s
+
+|VECTOR               |
+=======================
+|NUM TESTS |NUM ENEMY |
+=======================
+|3         |100000    |
+=======================
+2.598530s
+2.599969s
+2.601489s
+
+|KD_TREE              |
+=======================
+|NUM TESTS |NUM ENEMY |
+=======================
+|3         |10000     |
+=======================
+0.000477s
+0.000791s
+0.002419s
+
+|VECTOR               |
+=======================
+|NUM TESTS |NUM ENEMY |
+=======================
+|3         |10000     |
+=======================
+0.259912s
+0.259741s
+0.261913s
+
+|KD_TREE              |
+=======================
+|NUM TESTS |NUM ENEMY |
+=======================
+|3         |1000      |
+=======================
+0.000707s
+0.000523s
+0.000321s
+
+|VECTOR               |
+=======================
+|NUM TESTS |NUM ENEMY |
+=======================
+|3         |1000      |
+=======================
+0.026860s
+0.023836s
+0.023884s
+
+* PRELIMINARY CONCLUSION:
+*   On the condition that everything in the code works correctly (very doubtful about that),
+*   what can be seen is that the KD tree consistently outperforms the vector in all tests,
+*   regardless of number of enemies. We even ran a 1M enemies test just to compare the speeds and the KD tree
+*   is the more optimal choice by a big margin:
+
+|KD_TREE              |
+=======================
+|NUM TESTS |NUM ENEMY |
+=======================
+|3         |1000000   |
+=======================
+0.127299s
+0.069705s
+0.074712s
+
+|VECTOR               |
+=======================
+|NUM TESTS |NUM ENEMY |
+=======================
+|3         |1000000   |
+=======================
+27.186594s
+27.175901s
+26.195602s
+
+
+* ACKNOWLEDGEMENTS:
+*   The code is mostly following the requirements of the assignment, except for keeping track of the
+*   "insertion of two objects with duplicate keys" - both me and Hayk did not manage to figure out what that means :P
+*   By the time we managed to get to that part, it was a bit too late to ask.
+*
+ */
 int main() {
     int number_of_enemies;
+    int number_of_tests;
+
+    std::vector<double> kd_tree_times;
+    std::vector<double> vector_times;
 
     std::cout << "How many enemies would you like to generate?\n";
     std::cin >> number_of_enemies;
 
-    ObjStoreKD *obj_store_kd = new ObjStoreKD();
+    std::cout << "How many tests would you like to run?\n";
+    std::cin >> number_of_tests;
 
-    Object player1 = Object(-1, {0, 0}, {1, 1});
-    std::vector<Object*> objs1;
+    for (int i = 0; i < number_of_tests; i++) {
+        const double time = Benchmark::benchmark_kd_tree(number_of_enemies);
 
-    for (int i = 0; i < number_of_enemies; i++) {
-        Object enemy = Object(random_float(100000), random_point(), {0, 0});
-
-        obj_store_kd->insert(enemy);
+        kd_tree_times.push_back(time);
     }
 
-    Timer timer;
+    for (int i = 0; i < number_of_tests; i++) {
+        const double time = Benchmark::benchmark_vector(number_of_enemies);
 
-    for (int i = 0; i < 1000; i++) {
-        obj_store_kd->find_all_within_radius(player1.GetLoc(), 100, objs1);
-
-        player1.Update();
+        vector_times.push_back(time);
     }
 
-    std::printf("\n--\t--\t--\t--\n\nTime elapsed: %fs\n\n", timer.elapsed());
-
-    ObjStoreV *obj_store_v = new ObjStoreV();
-    Object player2 = Object(-1, {0, 0}, {1, 1});
-    std::vector<Object*> objs2;
-
-    for (int i = 0; i < number_of_enemies; i++) {
-        Object enemy = Object(random_float(100000), random_point(), {0, 0});
-
-        obj_store_v->Insert(enemy);
-    }
-
-    Timer timer2;
-
-    for (int i = 0; i < 1000; i++) {
-        obj_store_v->FindAllWithinRadius(player2.GetLoc(), 100, objs2);
-
-        player2.Update();
-    }
-
-    std::printf("\n--\t--\t--\t--\n\nTime elapsed: %fs\n\n", timer2.elapsed());
-
-    delete obj_store_v;
-    delete obj_store_kd;
+    Benchmark::print_times(kd_tree_times, number_of_tests, number_of_enemies);
+    Benchmark::print_times(vector_times, number_of_tests, number_of_enemies, 1);
 }
 
 /*
