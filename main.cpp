@@ -3,6 +3,7 @@
 
 #include "object.hpp"
 #include "obj_store_kd.hpp"
+#include "obj_store_v.hpp"
 #include "timer.hpp"
 
 float random_float(float range_to = 1000.f) {
@@ -30,9 +31,9 @@ int main() {
     std::cin >> number_of_enemies;
 
     ObjStoreKD *obj_store_kd = new ObjStoreKD();
-    Object player = Object(-1, {100, 100}, {1, 1});
-    std::vector<Object*> objs;
 
+    Object player1 = Object(-1, {0, 0}, {1, 1});
+    std::vector<Object*> objs1;
 
     for (int i = 0; i < number_of_enemies; i++) {
         Object enemy = Object(random_float(100000), random_point(), {0, 0});
@@ -43,14 +44,34 @@ int main() {
     Timer timer;
 
     for (int i = 0; i < 1000; i++) {
-        obj_store_kd->find_all_within_radius(player.GetLoc(), 100, objs);
-        player.Update();
+        obj_store_kd->find_all_within_radius(player1.GetLoc(), 100, objs1);
+
+        player1.Update();
     }
 
-    std::printf("\n--\t--\t--\t--\n\n");
+    std::printf("\n--\t--\t--\t--\n\nTime elapsed: %fs\n\n", timer.elapsed());
 
-    std::printf("Time elapsed: %fs\n\n", timer.elapsed());
+    ObjStoreV *obj_store_v = new ObjStoreV();
+    Object player2 = Object(-1, {0, 0}, {1, 1});
+    std::vector<Object*> objs2;
 
+    for (int i = 0; i < number_of_enemies; i++) {
+        Object enemy = Object(random_float(100000), random_point(), {0, 0});
+
+        obj_store_v->Insert(enemy);
+    }
+
+    Timer timer2;
+
+    for (int i = 0; i < 1000; i++) {
+        obj_store_v->FindAllWithinRadius(player2.GetLoc(), 100, objs2);
+
+        player2.Update();
+    }
+
+    std::printf("\n--\t--\t--\t--\n\nTime elapsed: %fs\n\n", timer2.elapsed());
+
+    delete obj_store_v;
     delete obj_store_kd;
 }
 
