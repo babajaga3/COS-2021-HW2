@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(code
         main.cpp
         obj_store_kd.cpp
+        obj_store_v.cpp
         object.cpp
         point.cpp
 )
