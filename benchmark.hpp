@@ -1,6 +1,7 @@
 #pragma once
 
 #include <random>
+#include <thread>
 #include <vector>
 
 #include "obj_store_kd.hpp"
