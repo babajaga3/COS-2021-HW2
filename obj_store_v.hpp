@@ -1,3 +1,5 @@
+#pragma once
+
 #include <unordered_set>
 #include <vector>
 
@@ -5,13 +7,14 @@
 
 class ObjStoreV {
 private:
-    std::vector<Object*> objs;
+    std::vector<Object> objs;
 
 public:
     ObjStoreV();
-    ObjStoreV(std::vector<Object*> & objs);
+    ObjStoreV(std::vector<Object> & objs);
 
-    bool Insert(Object* o);
-    void FindAllWithinRadius(Point2D center, float radius, std::vector<Object*> & objs);
+    bool Insert(const Object &o);
+    void FindAllWithinRadius(Point2D center, float radius, std::vector<Object*> &objects);
 
+    std::vector<Object> get_objs();
 };
