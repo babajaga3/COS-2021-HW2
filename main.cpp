@@ -3,6 +3,7 @@
 
 #include "object.hpp"
 #include "obj_store_kd.hpp"
+#include "timer.hpp"
 
 float random_float(float range_to = 1000.f) {
     const float range_from = 0.0f;
@@ -29,8 +30,9 @@ int main() {
     std::cin >> number_of_enemies;
 
     ObjStoreKD *obj_store_kd = new ObjStoreKD();
-    const Object player = Object(-1, {0, 0}, {1, 1});
+    Object player = Object(-1, {100, 100}, {1, 1});
     std::vector<Object*> objs;
+
 
     for (int i = 0; i < number_of_enemies; i++) {
         Object enemy = Object(random_float(100000), random_point(), {0, 0});
@@ -38,17 +40,16 @@ int main() {
         obj_store_kd->insert(enemy);
     }
 
-    obj_store_kd->find_all_within_radius(player.GetLoc(), 900, objs);
+    Timer timer;
 
-    for (Object* obj : objs) {
-        Point2D coords = obj->GetLoc();
-
-        std::printf("(%f, %f)\n", coords.x, coords.y);
+    for (int i = 0; i < 1000; i++) {
+        obj_store_kd->find_all_within_radius(player.GetLoc(), 100, objs);
+        player.Update();
     }
 
     std::printf("\n--\t--\t--\t--\n\n");
 
-    obj_store_kd->print();
+    std::printf("Time elapsed: %fs\n\n", timer.elapsed());
 
     delete obj_store_kd;
 }
@@ -62,4 +63,6 @@ int main() {
  * - https://www.geeksforgeeks.org/cpp/generate-a-random-float-number-in-cpp/
  * - https://stackoverflow.com/questions/4053837/colorizing-text-in-the-console-with-c
  * - https://stackoverflow.com/questions/3784114/how-to-pass-optional-arguments-to-a-method-in-c
+ * - https://www.learncpp.com/cpp-tutorial/timing-your-code/
+ * - https://www.geeksforgeeks.org/cpp/using-keyword-in-cpp-stl/
  */
