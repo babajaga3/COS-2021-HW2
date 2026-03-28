@@ -82,20 +82,27 @@ void ObjStoreKD::print() const {
     kd_print(root, 0);
 }
 
+void ObjStoreKD::find_all_within_radius(Point2D center, float radius, std::vector<Object *> &objs) {
+    //
+}
+
 void ObjStoreKD::kd_print(Node<Object>* node, int dim) {
-    // Base case: If node is null, return
     if (node == nullptr) return;
 
-    // Print current node with indentation based on dim
     for (int i = 0; i < dim; i++) std::cout << "  ";
     std::cout << "(";
     for (int i = 0; i < 2; i++) {
-        std::cout << at(node, i);
-        if (i < 2 - 1) std::cout << ", ";
-    }
-    std::cout << ")" << std::endl;
+        if (dim % 2 == 0) {
+            std::printf("\x1B[32m%f\033[0m", at(node, i));
+        } else {
+            std::printf("\x1B[36m%f\033[0m", at(node, i));
+        }
 
-    // Recursively print left and right children
+
+        if (i < 1) std::cout << ", ";
+    }
+    std::printf(") %s\n", dim % 2 == 0 ? "[x]" : "[y]");
+
     kd_print(node->get_left(), dim + 1);
     kd_print(node->get_right(), dim + 1);
 }

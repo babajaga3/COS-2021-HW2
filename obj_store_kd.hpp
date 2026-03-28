@@ -21,5 +21,6 @@ public:
     ~ObjStoreKD();
 
     bool insert(const Object &obj);
+    void find_all_within_radius(Point2D center, float radius, std::vector<Object*> &objs);
     void print() const;
 };
