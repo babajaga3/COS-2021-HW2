@@ -5,13 +5,6 @@
 
 int main() {
 
-    const Object obj1 = Object(1, {1, 2}, {3, 4});
-
-    auto *obj_store = new ObjStoreKD();
-
-    obj_store->insert_main(obj1);
-
-    obj_store->print_main();
 }
 
 /*

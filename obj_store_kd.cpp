@@ -2,9 +2,13 @@
 
 #include <iostream>
 
-ObjStoreKD::ObjStoreKD() : root(nullptr), existing_ids() {}
+ObjStoreKD::ObjStoreKD() : root(nullptr) {
+    this->existing_ids = new std::unordered_set<int>();
+}
 
-ObjStoreKD::ObjStoreKD(Node<Object> *new_root) : root(new_root), existing_ids() {}
+ObjStoreKD::ObjStoreKD(Node<Object> *new_root) : root(new_root) {
+    this->existing_ids = new std::unordered_set<int>();
+}
 
 void ObjStoreKD::insert(Node<Object> *new_node, const int dim, Node<Object> *start) {
     Node<Object> *current = start;
