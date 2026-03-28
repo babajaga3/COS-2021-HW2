@@ -104,8 +104,7 @@
 * ACKNOWLEDGEMENTS:
 *   The code is mostly following the requirements of the assignment, except for keeping track of the
 *   "insertion of two objects with duplicate keys" - both me and Hayk did not manage to figure out what that means :P
-*   By the time we managed to get to that part, it was a bit too late to ask.
-*
+*   By the time we got to that part, it was a bit too late to ask.
  */
 int main() {
     int number_of_enemies;
