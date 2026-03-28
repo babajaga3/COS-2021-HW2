@@ -118,7 +118,6 @@ void ObjStoreKD::kd_find_all(Point2D center, float radius, std::vector<Object *>
 
     if (current->IsWithinCircle(center, radius)) {
         objs.push_back(current);
-
     }
 
     kd_find_all(center, radius, objs, node->get_left());
